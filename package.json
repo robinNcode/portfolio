@@ -1,4 +1,5 @@
 {
+  "homepage": "https://robinncode.github.io/portfolio/",
   "name": "robin-portfolio",
   "version": "1.0.0",
   "private": true,
@@ -6,13 +7,20 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "@types/react-syntax-highlighter": "^15.5.13",
     "framer-motion": "^11.3.0",
-    "lucide-react": "^0.400.0"
+    "gh-pages": "^6.3.0",
+    "lucide-react": "^0.400.0",
+    "react": "^18.3.1",
+    "react-countup": "^6.5.3",
+    "react-dom": "^18.3.1",
+    "react-intersection-observer": "^10.0.3",
+    "react-syntax-highlighter": "^16.1.1"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

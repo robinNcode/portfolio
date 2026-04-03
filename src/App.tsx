@@ -10,7 +10,7 @@ import Contact from './components/Contact'
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-bg-base text-text-primary font-body">
+    <div className="min-h-screen bg-bg-base dark:bg-bg-base text-text-primary dark:text-text-primary font-body">
       <NavBar />
 
       <main>

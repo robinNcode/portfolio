@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
@@ -10,25 +11,64 @@ export default {
       },
       colors: {
         bg: {
-          base: '#040810',
-          surface: '#0a1020',
-          card: '#0d1627',
-          border: '#1a2540',
+          base: {
+            DEFAULT: '#040810',
+            light: '#ffffff',
+          },
+          surface: {
+            DEFAULT: '#0a1020',
+            light: '#f8fafc',
+          },
+          card: {
+            DEFAULT: '#0d1627',
+            light: '#ffffff',
+          },
+          border: {
+            DEFAULT: '#1a2540',
+            light: '#e2e8f0',
+          },
         },
         cyan: {
-          glow: '#22d3ee',
-          dim: '#0891b2',
-          faint: 'rgba(34,211,238,0.08)',
+          glow: {
+            DEFAULT: '#22d3ee',
+            light: '#0891b2',
+          },
+          dim: {
+            DEFAULT: '#0891b2',
+            light: '#0e7490',
+          },
+          faint: {
+            DEFAULT: 'rgba(34,211,238,0.08)',
+            light: 'rgba(6,182,212,0.08)',
+          },
         },
         orange: {
-          accent: '#f97316',
-          dim: '#ea580c',
-          faint: 'rgba(249,115,22,0.08)',
+          accent: {
+            DEFAULT: '#f97316',
+            light: '#ea580c',
+          },
+          dim: {
+            DEFAULT: '#ea580c',
+            light: '#c2410c',
+          },
+          faint: {
+            DEFAULT: 'rgba(249,115,22,0.08)',
+            light: 'rgba(234,88,12,0.08)',
+          },
         },
         text: {
-          primary: '#e2e8f0',
-          secondary: '#94a3b8',
-          muted: '#475569',
+          primary: {
+            DEFAULT: '#e2e8f0',
+            light: '#0f172a',
+          },
+          secondary: {
+            DEFAULT: '#94a3b8',
+            light: '#64748b',
+          },
+          muted: {
+            DEFAULT: '#475569',
+            light: '#94a3b8',
+          },
         },
       },
       animation: {

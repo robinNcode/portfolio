@@ -1,7 +1,10 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { Package, Star, Download, ExternalLink, AlertTriangle, CheckCircle2, Lightbulb } from 'lucide-react'
 import { openSource, debuggingStories } from '../data'
+import GitHubStats from './GitHubStats'
 
 export default function OpenSource() {
   const ref = useRef<HTMLElement>(null)
@@ -97,6 +100,14 @@ export default function OpenSource() {
               </div>
             </div>
 
+            {/* GitHub Stats */}
+            <div className="bg-bg-card border border-bg-border rounded-xl p-5">
+              <div className="font-mono text-xs text-text-muted mb-4 flex items-center gap-2">
+                <span className="text-cyan-glow">λ</span> GITHUB STATS
+              </div>
+              <GitHubStats />
+            </div>
+
             {/* Code snippet */}
             <div className="terminal-window">
               <div className="terminal-titlebar">
@@ -105,13 +116,21 @@ export default function OpenSource() {
                 <div className="terminal-dot bg-green-500/70" />
                 <span className="ml-2 font-mono text-xs text-text-muted">db-craft usage</span>
               </div>
-              <pre className="p-5 font-mono text-xs text-text-secondary leading-relaxed overflow-x-auto">
-                {openSource.snippet.split('\n').map((line, i) => (
-                  <div key={i} className={line.startsWith('//') ? 'text-text-muted' : line.startsWith('php') || line.startsWith('composer') ? 'text-cyan-glow' : ''}>
-                    {line}
-                  </div>
-                ))}
-              </pre>
+              <div className="p-5">
+                <SyntaxHighlighter
+                  language="bash"
+                  style={oneDark}
+                  customStyle={{
+                    margin: 0,
+                    padding: 0,
+                    background: 'transparent',
+                    fontSize: '12px',
+                    lineHeight: '1.5',
+                  }}
+                >
+                  {openSource.snippet}
+                </SyntaxHighlighter>
+              </div>
             </div>
           </motion.div>
 
