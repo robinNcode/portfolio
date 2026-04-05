@@ -159,7 +159,7 @@ export default function Hero() {
               >
                 <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8 mb-6">
                   <img
-                    src="/profile.png"
+                    src="/portfolio/profile.png"
                     alt="Profile"
                     className="w-44 h-44 rounded-xl border border-cyan-glow/30 object-cover shadow-[0_0_20px_rgba(34,211,238,0.1)]"
                   />
@@ -195,7 +195,7 @@ export default function Hero() {
                     Initialize Contact
                   </a>
                   <a
-                    href="/Resume_of_MsM_Robin_2026_02_25.pdf"
+                    href="/portfolio/Resume_of_MsM_Robin_2026_02_25.pdf"
                     download="MD_Shahin_Mia_Robin_Resume.pdf"
                     className="px-5 py-2.5 border border-bg-border dark:border-bg-border text-text-secondary dark:text-text-secondary font-display font-medium text-sm rounded hover:border-orange-accent/40 hover:text-orange-accent dark:hover:border-orange-accent/40 dark:hover:text-orange-accent transition-all"
                   >
