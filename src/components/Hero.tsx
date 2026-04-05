@@ -103,8 +103,8 @@ export default function Hero() {
                         line?.includes('✓')
                           ? 'text-green-400'
                           : line?.includes('Welcome')
-                          ? 'text-cyan-glow dark:text-cyan-glow font-medium'
-                          : 'text-text-secondary dark:text-text-secondary'
+                            ? 'text-cyan-glow dark:text-cyan-glow font-medium'
+                            : 'text-text-secondary dark:text-text-secondary'
                       }
                     >
                       {line}
@@ -157,16 +157,25 @@ export default function Hero() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
               >
-                <div className="font-mono text-sm text-cyan-dim dark:text-cyan-dim mb-3 flex items-center gap-2">
-                  <span className="text-cyan-glow dark:text-cyan-glow">//</span>
-                  <span className="text-text-muted dark:text-text-muted">software-engineer.profile</span>
-                </div>
+                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8 mb-6">
+                  <img
+                    src="/profile.png"
+                    alt="Profile"
+                    className="w-44 h-44 rounded-xl border border-cyan-glow/30 object-cover shadow-[0_0_20px_rgba(34,211,238,0.1)]"
+                  />
+                  <div className="flex-1 mt-2">
+                    <div className="font-mono text-sm text-cyan-dim dark:text-cyan-dim mb-3 flex items-center gap-2 justify-center sm:justify-start">
+                      <span className="text-cyan-glow dark:text-cyan-glow">//</span>
+                      <span className="text-text-muted dark:text-text-muted">software-engineer.profile</span>
+                    </div>
 
-                <h1 className="font-display text-5xl lg:text-6xl font-bold text-text-primary dark:text-text-primary leading-tight mb-2">
-                  MD Shahin Mia
-                  <br />
-                  <span className="gradient-text">Robin</span>
-                </h1>
+                    <h1 className="font-display text-5xl lg:text-6xl font-bold text-text-primary dark:text-text-primary leading-tight mb-2 text-center sm:text-left">
+                      MD Shahin Mia
+                      <br />
+                      <span className="gradient-text">Robin</span>
+                    </h1>
+                  </div>
+                </div>
 
                 <p className="font-body text-lg text-text-secondary dark:text-text-secondary mt-5 leading-relaxed border-l-2 border-cyan-glow/30 pl-4 italic">
                   "{profile.tagline}"
@@ -174,7 +183,7 @@ export default function Hero() {
 
                 <p className="font-body text-text-secondary dark:text-text-secondary text-sm mt-5 leading-relaxed max-w-md">
                   Full-stack engineer with <span className="text-cyan-glow dark:text-cyan-glow font-medium">5+ years</span> building
-                  production systems in microfinance, HR SaaS, and fintech. 
+                  production systems in microfinance, HR SaaS, and fintech.
                   Strong in backend architecture, database performance, and cross-team ownership.
                 </p>
 

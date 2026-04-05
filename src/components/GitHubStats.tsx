@@ -6,7 +6,7 @@ interface GitHubStats {
   followers: number
   following: number
   public_repos: number
-  public_gists: number
+  total_stars: number
 }
 
 export default function GitHubStats() {
@@ -17,12 +17,30 @@ export default function GitHubStats() {
   useEffect(() => {
     const fetchGitHubStats = async () => {
       try {
-        const response = await fetch('https://api.github.com/users/robinNcode')
-        if (!response.ok) {
+        const [userResponse, reposResponse] = await Promise.all([
+          fetch('https://api.github.com/users/robinncode'),
+          fetch('https://api.github.com/users/robinncode/repos?per_page=100')
+        ])
+
+        if (!userResponse.ok) {
           throw new Error('Failed to fetch GitHub stats')
         }
-        const data = await response.json()
-        setStats(data)
+
+        const userData = await userResponse.json()
+        let totalStars = 0
+
+        if (reposResponse.ok) {
+          try {
+            const reposData = await reposResponse.json()
+            if (Array.isArray(reposData)) {
+              totalStars = reposData.reduce((acc: number, repo: any) => acc + repo.stargazers_count, 0)
+            }
+          } catch (e) {
+            console.warn('Failed to parse repository payload for live stars.')
+          }
+        }
+
+        setStats({ ...userData, total_stars: totalStars })
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load stats')
       } finally {
@@ -70,8 +88,8 @@ export default function GitHubStats() {
     },
     {
       icon: Star,
-      label: 'Gists',
-      value: stats.public_gists,
+      label: 'Stars',
+      value: stats.total_stars,
       color: 'text-amber-400',
     },
     {

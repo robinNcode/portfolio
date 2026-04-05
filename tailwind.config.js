@@ -11,64 +11,25 @@ export default {
       },
       colors: {
         bg: {
-          base: {
-            DEFAULT: '#040810',
-            light: '#ffffff',
-          },
-          surface: {
-            DEFAULT: '#0a1020',
-            light: '#f8fafc',
-          },
-          card: {
-            DEFAULT: '#0d1627',
-            light: '#ffffff',
-          },
-          border: {
-            DEFAULT: '#1a2540',
-            light: '#e2e8f0',
-          },
+          base: 'rgb(var(--bg-base) / <alpha-value>)',
+          surface: 'rgb(var(--bg-surface) / <alpha-value>)',
+          card: 'rgb(var(--bg-card) / <alpha-value>)',
+          border: 'rgb(var(--border) / <alpha-value>)',
         },
         cyan: {
-          glow: {
-            DEFAULT: '#22d3ee',
-            light: '#0891b2',
-          },
-          dim: {
-            DEFAULT: '#0891b2',
-            light: '#0e7490',
-          },
-          faint: {
-            DEFAULT: 'rgba(34,211,238,0.08)',
-            light: 'rgba(6,182,212,0.08)',
-          },
+          glow: 'rgb(var(--cyan-glow) / <alpha-value>)',
+          dim: 'rgb(var(--cyan-dim) / <alpha-value>)',
+          faint: 'rgb(var(--cyan-faint) / 0.08)',
         },
         orange: {
-          accent: {
-            DEFAULT: '#f97316',
-            light: '#ea580c',
-          },
-          dim: {
-            DEFAULT: '#ea580c',
-            light: '#c2410c',
-          },
-          faint: {
-            DEFAULT: 'rgba(249,115,22,0.08)',
-            light: 'rgba(234,88,12,0.08)',
-          },
+          accent: 'rgb(var(--orange-accent) / <alpha-value>)',
+          dim: 'rgb(var(--orange-dim) / <alpha-value>)',
+          faint: 'rgb(var(--orange-faint) / 0.08)',
         },
         text: {
-          primary: {
-            DEFAULT: '#e2e8f0',
-            light: '#0f172a',
-          },
-          secondary: {
-            DEFAULT: '#94a3b8',
-            light: '#64748b',
-          },
-          muted: {
-            DEFAULT: '#475569',
-            light: '#94a3b8',
-          },
+          primary: 'rgb(var(--text-primary) / <alpha-value>)',
+          secondary: 'rgb(var(--text-secondary) / <alpha-value>)',
+          muted: 'rgb(var(--text-muted) / <alpha-value>)',
         },
       },
       animation: {
