@@ -5,7 +5,7 @@ import CountUp from 'react-countup'
 import { ChevronDown, Cpu, Database, Globe } from 'lucide-react'
 import { bootSequence, profile } from '../data'
 import profileImg from '../assets/images/profile.png'
-import cv from '../assets/pdf/Resume_of_MsM_Robin_2026_02_25.pdf'
+import cv from '../assets/pdf/Resume_of_MsM_Robin_2026_04_07.pdf'
 
 const BOOT_SPEED = 5 // Much faster typing speed
 
