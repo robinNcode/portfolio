@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import CountUp from 'react-countup'
@@ -41,6 +41,106 @@ export default function Hero() {
   const [currentChar, setCurrentChar] = useState(0)
   const [bootDone, setBootDone] = useState(false)
   const [showMain, setShowMain] = useState(false)
+  const [terminalHistory, setTerminalHistory] = useState<{ type: 'command' | 'output'; content: string }[]>([])
+  const [cmdHistory, setCmdHistory] = useState<string[]>([])
+  const [historyIndex, setHistoryIndex] = useState(-1)
+  const [inputValue, setInputValue] = useState('')
+  const terminalRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  const commandResponses: Record<string, string> = {
+    help: 'Available: name, about, experience, contact, mail, linkedin, github, skills, clear. Navigation: init, about, log, services, stack, pkg, connect',
+    about: 'Software Engineer with 5+ years experience in backend architecture and product ownership.',
+    experience: '5+ years building production systems in microfinance, HR SaaS, and fintech.',
+    contact: profile.phone,
+    mail: profile.email,
+    linkedin: 'linkedin.com/in/robinNcode',
+    name: profile.name,
+    github: 'github.com/robinNcode',
+    skills: 'React, Laravel, MySQL, Docker, Redis, TypeScript, Tailwind, PHP',
+    projects: 'Navigating to projects section...',
+    init: 'Navigating to home...',
+    log: 'Navigating to experience...',
+    services: 'Navigating to projects...',
+    stack: 'Navigating to technical stack...',
+    pkg: 'Navigating to open source contributions...',
+    connect: 'Navigating to contact section...',
+  }
+
+  const navigationMap: Record<string, string> = {
+    init: 'hero',
+    about: 'about',
+    log: 'experience',
+    services: 'projects',
+    projects: 'projects',
+    stack: 'skills',
+    pkg: 'opensource',
+    connect: 'contact',
+  }
+
+  // Auto-scroll terminal
+  useEffect(() => {
+    if (terminalRef.current) {
+      terminalRef.current.scrollTop = terminalRef.current.scrollHeight
+    }
+  }, [terminalHistory, lines])
+
+  // Auto-focus input when boot sequence is done
+  useEffect(() => {
+    if (bootDone && inputRef.current) {
+      inputRef.current.focus()
+    }
+  }, [bootDone])
+
+  const handleCommand = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      const cmd = inputValue.trim().toLowerCase()
+      if (!cmd) return
+
+      // Add to visual terminal history
+      const newTerminalHistory = [...terminalHistory, { type: 'command' as const, content: cmd }]
+      
+      // Update command history for arrows (always keep history even if clear)
+      setCmdHistory(prev => {
+        if (prev[prev.length - 1] === cmd) return prev
+        return [...prev, cmd]
+      })
+      setHistoryIndex(-1)
+
+      if (cmd === 'clear') {
+        setTerminalHistory([])
+      } else if (navigationMap[cmd]) {
+        document.getElementById(navigationMap[cmd])?.scrollIntoView({ behavior: 'smooth' })
+        newTerminalHistory.push({ type: 'output' as const, content: commandResponses[cmd] })
+        setTerminalHistory(newTerminalHistory)
+      } else if (commandResponses[cmd]) {
+        newTerminalHistory.push({ type: 'output' as const, content: commandResponses[cmd] })
+        setTerminalHistory(newTerminalHistory)
+      } else {
+        newTerminalHistory.push({ type: 'output' as const, content: `Command not found: ${cmd}. Type 'help' for available commands.` })
+        setTerminalHistory(newTerminalHistory)
+      }
+      
+      setInputValue('')
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      if (cmdHistory.length > 0) {
+        const nextIndex = Math.min(historyIndex + 1, cmdHistory.length - 1)
+        setHistoryIndex(nextIndex)
+        setInputValue(cmdHistory[cmdHistory.length - 1 - nextIndex])
+      }
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      if (historyIndex > 0) {
+        const nextIndex = historyIndex - 1
+        setHistoryIndex(nextIndex)
+        setInputValue(cmdHistory[cmdHistory.length - 1 - nextIndex])
+      } else if (historyIndex === 0) {
+        setHistoryIndex(-1)
+        setInputValue('')
+      }
+    }
+  }
 
   useEffect(() => {
     if (currentLine >= bootSequence.length) {
@@ -97,7 +197,10 @@ export default function Hero() {
               </div>
 
               {/* Terminal content */}
-              <div className="p-5 font-mono text-xs leading-relaxed min-h-[280px] bg-bg-surface dark:bg-bg-surface">
+              <div 
+                ref={terminalRef}
+                className="p-5 font-mono text-xs leading-relaxed h-[320px] overflow-y-auto bg-bg-surface dark:bg-bg-surface custom-scrollbar"
+              >
                 {lines.map((line, i) => (
                   <div key={i} className="mb-1">
                     <span
@@ -118,10 +221,38 @@ export default function Hero() {
                 ))}
 
                 {bootDone && (
-                  <div className="mt-3 flex items-center gap-2">
-                    <span className="text-cyan-glow dark:text-cyan-glow">robin@prod:~$</span>
-                    <span className="animate-blink text-cyan-glow dark:text-cyan-glow">▋</span>
-                  </div>
+                  <>
+                    <div className="mt-2 text-text-muted/60 italic">
+                      Type 'help' to see available commands
+                    </div>
+                    {terminalHistory.map((item, i) => (
+                      <div key={i} className="mt-1">
+                        {item.type === 'command' ? (
+                          <div className="flex gap-2">
+                            <span className="text-cyan-glow dark:text-cyan-glow">robin@prod:~$</span>
+                            <span className="text-text-primary">{item.content}</span>
+                          </div>
+                        ) : (
+                          <div className="text-text-secondary whitespace-pre-wrap pl-4 border-l border-cyan-glow/20">
+                            {item.content}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                    <div className="mt-1 flex items-center gap-2">
+                      <span className="text-cyan-glow dark:text-cyan-glow">robin@prod:~$</span>
+                      <input
+                        ref={inputRef}
+                        type="text"
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        onKeyDown={handleCommand}
+                        className="bg-transparent border-none outline-none text-text-primary w-full p-0 m-0 focus:ring-0"
+                        spellCheck={false}
+                        autoFocus
+                      />
+                    </div>
+                  </>
                 )}
               </div>
             </div>
@@ -189,7 +320,7 @@ export default function Hero() {
                   Strong in backend architecture, database performance, and cross-team ownership.
                 </p>
 
-                <div className="flex flex-wrap gap-3 mt-7">
+                <div className="flex flex-nowrap gap-3 mt-7 overflow-x-auto no-scrollbar pb-2">
                   <a
                     href={`mailto:${profile.email}`}
                     className="px-5 py-2.5 bg-cyan-glow dark:bg-cyan-glow text-bg-base dark:text-bg-base font-display font-semibold text-sm rounded hover:bg-cyan-400 dark:hover:bg-cyan-400 transition-all hover:shadow-lg hover:shadow-cyan-glow/20"

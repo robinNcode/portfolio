@@ -2,8 +2,8 @@ import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
-import { Package, Star, Download, ExternalLink, AlertTriangle, CheckCircle2, Lightbulb } from 'lucide-react'
-import { openSource, debuggingStories } from '../data'
+import { Package, Star, Download, ExternalLink, AlertTriangle, CheckCircle2, Lightbulb, GitFork } from 'lucide-react'
+import { openSourceProjects, debuggingStories } from '../data'
 import GitHubStats from './GitHubStats'
 
 export default function OpenSource() {
@@ -23,7 +23,7 @@ export default function OpenSource() {
           className="mb-16"
         >
           <div className="font-mono text-xs text-cyan-dim mb-2 flex items-center gap-2">
-            <span className="text-cyan-glow">$</span> composer show msmrobin/db-craft
+            <span className="text-cyan-glow">$</span> ls -la ~/contributions
           </div>
           <h2 className="font-display text-4xl font-bold text-text-primary">
             Open Source & Debug Lab
@@ -32,73 +32,117 @@ export default function OpenSource() {
         </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-8">
-          {/* OSS Package */}
+          {/* OSS Packages */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="space-y-4"
+            className="space-y-8"
           >
-            {/* Package card */}
-            <div className="bg-bg-card border border-bg-border rounded-xl overflow-hidden card-hover">
-              <div className="bg-gradient-to-r from-cyan-900/30 to-bg-card p-5 border-b border-bg-border">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-cyan-faint border border-cyan-glow/20 flex items-center justify-center">
-                      <Package size={18} className="text-cyan-glow" />
+            {openSourceProjects.map((project, idx) => (
+              <div key={project.name} className="space-y-4">
+                {/* Package card */}
+                <div className="bg-bg-card border border-bg-border rounded-xl overflow-hidden card-hover">
+                  <div className="bg-gradient-to-r from-cyan-900/30 to-bg-card p-5 border-b border-bg-border">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-cyan-faint border border-cyan-glow/20 flex items-center justify-center">
+                          <Package size={18} className="text-cyan-glow" />
+                        </div>
+                        <div>
+                          <h3 className="font-display font-bold text-text-primary">{project.name}</h3>
+                          <div className="font-mono text-xs text-text-muted mt-0.5">{project.package}</div>
+                        </div>
+                      </div>
+                      <a
+                        href={project.github}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-text-muted hover:text-cyan-glow transition-colors"
+                        onClick={e => e.stopPropagation()}
+                      >
+                        <ExternalLink size={16} />
+                      </a>
                     </div>
-                    <div>
-                      <h3 className="font-display font-bold text-text-primary">{openSource.name}</h3>
-                      <div className="font-mono text-xs text-text-muted mt-0.5">{openSource.package}</div>
+
+                    {/* Stats */}
+                    <div className="flex items-center gap-6 mt-5">
+                      {project.stats.installs && (
+                        <div className="flex items-center gap-2">
+                          <Download size={14} className="text-cyan-glow" />
+                          <span className="font-display font-bold text-2xl text-cyan-glow">
+                            {project.stats.installs}
+                          </span>
+                          <span className="font-mono text-xs text-text-muted">installs</span>
+                        </div>
+                      )}
+                      {project.stats.forks && (
+                        <div className="flex items-center gap-2">
+                          <GitFork size={14} className="text-cyan-glow" />
+                          <span className="font-display font-bold text-2xl text-cyan-glow">
+                            {project.stats.forks}
+                          </span>
+                          <span className="font-mono text-xs text-text-muted">forks</span>
+                        </div>
+                      )}
+                      <div className="flex items-center gap-2">
+                        <Star size={14} className="text-amber-400" />
+                        <span className="font-display font-bold text-2xl text-amber-400">
+                          {project.stats.stars}
+                        </span>
+                        <span className="font-mono text-xs text-text-muted">stars</span>
+                      </div>
                     </div>
                   </div>
-                  <a
-                    href={openSource.github}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-text-muted hover:text-cyan-glow transition-colors"
-                    onClick={e => e.stopPropagation()}
-                  >
-                    <ExternalLink size={16} />
-                  </a>
-                </div>
 
-                {/* Stats */}
-                <div className="flex items-center gap-6 mt-5">
-                  <div className="flex items-center gap-2">
-                    <Download size={14} className="text-cyan-glow" />
-                    <span className="font-display font-bold text-2xl text-cyan-glow">
-                      {openSource.stats.installs}
-                    </span>
-                    <span className="font-mono text-xs text-text-muted">installs</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Star size={14} className="text-amber-400" />
-                    <span className="font-display font-bold text-2xl text-amber-400">
-                      {openSource.stats.stars}
-                    </span>
-                    <span className="font-mono text-xs text-text-muted">stars</span>
+                  <div className="p-5">
+                    <p className="text-sm text-text-secondary leading-relaxed mb-4">
+                      {project.description}
+                    </p>
+
+                    {project.problem && (
+                      <div className="bg-bg-surface/60 border border-bg-border rounded-lg p-3 mb-4">
+                        <div className="font-mono text-[10px] text-orange-accent mb-2">WHY I BUILT THIS</div>
+                        <p className="text-xs text-text-secondary">{project.problem}</p>
+                      </div>
+                    )}
+
+                    <div className="flex flex-wrap gap-2">
+                      {[project.language, project.platform, 'Open Source'].map(tag => (
+                        <span key={tag} className="tag">{tag}</span>
+                      ))}
+                    </div>
                   </div>
                 </div>
+
+                {/* Code snippet (optional) */}
+                {project.snippet && (
+                  <div className="terminal-window">
+                    <div className="terminal-titlebar">
+                      <div className="terminal-dot bg-red-500/70" />
+                      <div className="terminal-dot bg-yellow-500/70" />
+                      <div className="terminal-dot bg-green-500/70" />
+                      <span className="ml-2 font-mono text-xs text-text-muted">{project.name.toLowerCase()} usage</span>
+                    </div>
+                    <div className="p-5">
+                      <SyntaxHighlighter
+                        language="bash"
+                        style={oneDark}
+                        customStyle={{
+                          margin: 0,
+                          padding: 0,
+                          background: 'transparent',
+                          fontSize: '12px',
+                          lineHeight: '1.5',
+                        }}
+                      >
+                        {project.snippet}
+                      </SyntaxHighlighter>
+                    </div>
+                  </div>
+                )}
               </div>
-
-              <div className="p-5">
-                <p className="text-sm text-text-secondary leading-relaxed mb-4">
-                  {openSource.description}
-                </p>
-
-                <div className="bg-bg-surface/60 border border-bg-border rounded-lg p-3 mb-4">
-                  <div className="font-mono text-[10px] text-orange-accent mb-2">WHY I BUILT THIS</div>
-                  <p className="text-xs text-text-secondary">{openSource.problem}</p>
-                </div>
-
-                <div className="flex flex-wrap gap-2">
-                  {[openSource.language, openSource.platform, 'Open Source'].map(tag => (
-                    <span key={tag} className="tag">{tag}</span>
-                  ))}
-                </div>
-              </div>
-            </div>
+            ))}
 
             {/* GitHub Stats */}
             <div className="bg-bg-card border border-bg-border rounded-xl p-5">
@@ -106,31 +150,6 @@ export default function OpenSource() {
                 <span className="text-cyan-glow">λ</span> GITHUB STATS
               </div>
               <GitHubStats />
-            </div>
-
-            {/* Code snippet */}
-            <div className="terminal-window">
-              <div className="terminal-titlebar">
-                <div className="terminal-dot bg-red-500/70" />
-                <div className="terminal-dot bg-yellow-500/70" />
-                <div className="terminal-dot bg-green-500/70" />
-                <span className="ml-2 font-mono text-xs text-text-muted">db-craft usage</span>
-              </div>
-              <div className="p-5">
-                <SyntaxHighlighter
-                  language="bash"
-                  style={oneDark}
-                  customStyle={{
-                    margin: 0,
-                    padding: 0,
-                    background: 'transparent',
-                    fontSize: '12px',
-                    lineHeight: '1.5',
-                  }}
-                >
-                  {openSource.snippet}
-                </SyntaxHighlighter>
-              </div>
             </div>
           </motion.div>
 

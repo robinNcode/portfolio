@@ -17,13 +17,8 @@ export const profile = {
 
 export const bootSequence = [
   '> Initializing system...',
-  '> Loading kernel modules: [php-laravel] [react] [mysql] [redis]',
-  '> Mounting filesystems: /backend /frontend /devops',
-  '> Checking process integrity...',
-  '> Starting microfinance-engine v3.1... ✓',
-  '> Starting hr-platform v2.4... ✓',
-  '> Starting investor-system v1.8... ✓',
-  '> All services operational.',
+  '> Loading modules: [laravel] [react] [mysql] [redis]',
+  '> Services online: [microfin] [hr] [investor] ✓',
   '> Welcome, Robin. System ready.',
 ]
 
@@ -152,6 +147,32 @@ export const projects = [
     gradient: 'from-emerald-900/30 to-green-900/20',
     accent: '#34d399',
   },
+  {
+    id: 'noor',
+    name: 'Noor',
+    type: 'Islamic Lifestyle Platform',
+    status: 'Production',
+    problem: 'Muslims needed a unified digital companion for daily spiritual practices that stays relevant throughout the year.',
+    solution: 'Built a complete digital experience for daily Ayats, Hadiths, Duas, and Amals. Integrated animated "Sacred Geometry" UI elements and dynamic public statistics tracking.',
+    impact: 'Providing a seamless spiritual tracking experience for users.',
+    stack: ['React', 'Next.js', 'Tailwind CSS', 'Framer Motion'],
+    architecture: 'sacred-geometry',
+    gradient: 'from-emerald-900/40 to-cyan-900/20',
+    accent: '#10b981',
+  },
+  {
+    id: 'abmiti',
+    name: 'Abmiti (আয় বেয় মিতি)',
+    type: 'Personal Finance Tracker',
+    status: 'Development',
+    problem: 'Difficulty in tracking personal income, expenses, and savings with a clear, localized interface.',
+    solution: 'Architected a full-stack personal finance tracker with Node.js/Express/MongoDB backend and React/Vite/Tailwind frontend. Implemented JWT auth, SMS parsing, and Zustand for state management.',
+    impact: 'Streamlined financial tracking with aggregated stats and category-wise analysis.',
+    stack: ['Node.js', 'Express', 'MongoDB', 'React', 'Zustand', 'Tailwind'],
+    architecture: 'mern-stack',
+    gradient: 'from-orange-900/30 to-red-900/20',
+    accent: '#f97316',
+  },
 ]
 
 export const skills = {
@@ -163,12 +184,12 @@ export const skills = {
   'Backend Engineering': {
     icon: '◉',
     color: '#a78bfa',
-    items: ['PHP (Laravel)', 'PHP (CodeIgniter)', 'RESTful APIs', 'Authentication', 'SaaS Architecture', 'RBAC Systems'],
+    items: ['PHP (Laravel)', 'Node.js (Express)', 'PHP (CodeIgniter)', 'RESTful APIs', 'Authentication', 'SaaS Architecture', 'RBAC Systems'],
   },
   'Data Layer': {
     icon: '◐',
     color: '#f97316',
-    items: ['MySQL', 'Redis', 'MongoDB', 'Query Optimization', 'Schema Design', 'Database Migration'],
+    items: ['MySQL', 'MongoDB', 'Redis', 'Query Optimization', 'Schema Design', 'Database Migration'],
   },
   'DevOps & Tools': {
     icon: '◍',
@@ -177,21 +198,22 @@ export const skills = {
   },
 }
 
-export const openSource = {
-  name: 'DB-Craft',
-  package: 'msmrobin/db-craft',
-  platform: 'Packagist',
-  language: 'PHP / CodeIgniter 4',
-  description: 'A CodeIgniter 4 toolkit that automates database migrations and seeders — giving CI4 developers a Laravel Artisan-like workflow for schema versioning.',
-  problem: 'CodeIgniter 4 had no built-in migration runner with seeder support. Developers were manually managing schema changes, leading to environment drift and deployment errors.',
-  stats: {
-    installs: '3,709',
-    stars: 19,
-    version: '1.x',
-  },
-  github: 'https://github.com/msmrobin/db-craft',
-  packagist: 'https://packagist.org/packages/msmrobin/db-craft',
-  snippet: `// Install
+export const openSourceProjects = [
+  {
+    name: 'DB-Craft',
+    package: 'msmrobin/db-craft',
+    platform: 'Packagist',
+    language: 'PHP / CodeIgniter 4',
+    description: 'A CodeIgniter 4 toolkit that automates database migrations and seeders — giving CI4 developers a Laravel Artisan-like workflow for schema versioning.',
+    problem: 'CodeIgniter 4 had no built-in migration runner with seeder support. Developers were manually managing schema changes, leading to environment drift and deployment errors.',
+    stats: {
+      installs: '3,709',
+      stars: 19,
+      version: '1.x',
+    },
+    github: 'https://github.com/msmrobin/db-craft',
+    packagist: 'https://packagist.org/packages/msmrobin/db-craft',
+    snippet: `// Install
 composer require msmrobin/db-craft
 
 // Run all pending migrations
@@ -202,7 +224,22 @@ php spark db:seed UserSeeder
 
 // Rollback last batch
 php spark db:rollback`,
-}
+  },
+  {
+    name: 'DevTools',
+    package: 'me-shaon/devtools',
+    platform: 'GitHub',
+    language: 'JavaScript / TypeScript',
+    description: 'A comprehensive developer tool suite for modern workflows.',
+    problem: 'Need for a centralized, high-performance tool collection for common development tasks.',
+    stats: {
+      forks: 59,
+      stars: 139,
+    },
+    github: 'https://github.com/me-shaon/devtools',
+    url: 'https://devtools.ahmedshamim.com/',
+  },
+]
 
 export const debuggingStories = [
   {
