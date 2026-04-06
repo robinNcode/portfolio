@@ -4,6 +4,8 @@ import { useInView } from 'react-intersection-observer'
 import CountUp from 'react-countup'
 import { ChevronDown, Cpu, Database, Globe } from 'lucide-react'
 import { bootSequence, profile } from '../data'
+import profileImg from '../assets/images/profile.png'
+import cv from '../assets/pdf/Resume_of_MsM_Robin_2026_02_25.pdf'
 
 const BOOT_SPEED = 5 // Much faster typing speed
 
@@ -159,17 +161,17 @@ export default function Hero() {
               >
                 <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8 mb-6">
                   <img
-                    src="/portfolio/profile.png"
+                    src={profileImg}
                     alt="Profile"
-                    className="w-44 h-44 rounded-xl border border-cyan-glow/30 object-cover shadow-[0_0_20px_rgba(34,211,238,0.1)]"
+                    className="w-48 h-48 sm:w-56 sm:h-56 lg:w-64 lg:h-64 rounded-xl border border-cyan-glow/30 object-cover shadow-[0_0_20px_rgba(34,211,238,0.1)]"
                   />
                   <div className="flex-1 mt-2">
-                    <div className="font-mono text-sm text-cyan-dim dark:text-cyan-dim mb-3 flex items-center gap-2 justify-center sm:justify-start">
+                    {/* <div className="font-mono text-sm text-cyan-dim dark:text-cyan-dim mb-3 flex items-center gap-2 justify-center sm:justify-start">
                       <span className="text-cyan-glow dark:text-cyan-glow">//</span>
                       <span className="text-text-muted dark:text-text-muted">software-engineer.profile</span>
-                    </div>
+                    </div> */}
 
-                    <h1 className="font-display text-5xl lg:text-6xl font-bold text-text-primary dark:text-text-primary leading-tight mb-2 text-center sm:text-left">
+                    <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-text-primary dark:text-text-primary leading-tight mb-2 text-center sm:text-left">
                       MD Shahin Mia
                       <br />
                       <span className="gradient-text">Robin</span>
@@ -195,7 +197,7 @@ export default function Hero() {
                     Initialize Contact
                   </a>
                   <a
-                    href="/portfolio/Resume_of_MsM_Robin_2026_02_25.pdf"
+                    href={cv}
                     download="MD_Shahin_Mia_Robin_Resume.pdf"
                     className="px-5 py-2.5 border border-bg-border dark:border-bg-border text-text-secondary dark:text-text-secondary font-display font-medium text-sm rounded hover:border-orange-accent/40 hover:text-orange-accent dark:hover:border-orange-accent/40 dark:hover:text-orange-accent transition-all"
                   >
