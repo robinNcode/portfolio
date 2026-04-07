@@ -4,7 +4,7 @@ import { useInView } from 'react-intersection-observer'
 import CountUp from 'react-countup'
 import { ChevronDown, Cpu, Database, Globe } from 'lucide-react'
 import { bootSequence, profile } from '../data'
-import profileImg from '../assets/images/profile.png'
+import profileImg from '../assets/images/rsz_profile.png'
 import cv from '../assets/pdf/Resume_of_MsM_Robin_2026_04_07.pdf'
 
 const BOOT_SPEED = 5 // Much faster typing speed
@@ -99,7 +99,7 @@ export default function Hero() {
 
       // Add to visual terminal history
       const newTerminalHistory = [...terminalHistory, { type: 'command' as const, content: cmd }]
-      
+
       // Update command history for arrows (always keep history even if clear)
       setCmdHistory(prev => {
         if (prev[prev.length - 1] === cmd) return prev
@@ -120,7 +120,7 @@ export default function Hero() {
         newTerminalHistory.push({ type: 'output' as const, content: `Command not found: ${cmd}. Type 'help' for available commands.` })
         setTerminalHistory(newTerminalHistory)
       }
-      
+
       setInputValue('')
     } else if (e.key === 'ArrowUp') {
       e.preventDefault()
@@ -197,7 +197,7 @@ export default function Hero() {
               </div>
 
               {/* Terminal content */}
-              <div 
+              <div
                 ref={terminalRef}
                 className="p-5 font-mono text-xs leading-relaxed h-[320px] overflow-y-auto bg-bg-surface dark:bg-bg-surface custom-scrollbar"
               >
@@ -229,7 +229,7 @@ export default function Hero() {
                       <div key={i} className="mt-1">
                         {item.type === 'command' ? (
                           <div className="flex gap-2">
-                            <span className="text-cyan-glow dark:text-cyan-glow">robin@prod:~$</span>
+                            <span className="text-cyan-glow dark:text-cyan-glow">robin@dev:~$</span>
                             <span className="text-text-primary">{item.content}</span>
                           </div>
                         ) : (
@@ -240,7 +240,7 @@ export default function Hero() {
                       </div>
                     ))}
                     <div className="mt-1 flex items-center gap-2">
-                      <span className="text-cyan-glow dark:text-cyan-glow">robin@prod:~$</span>
+                      <span className="text-cyan-glow dark:text-cyan-glow">robin@dev:~$</span>
                       <input
                         ref={inputRef}
                         type="text"
