@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useScrollProgress, useActiveSection } from '../hooks'
 import { useTheme } from '../contexts/ThemeContext'
-import { Terminal, Menu, X, Sun, Moon } from 'lucide-react'
+import { useAuth } from '../contexts/AuthContext'
+import { useNavigate, useLocation, Link } from 'react-router-dom'
+import { Terminal, Menu, X, Sun, Moon, LogIn, LogOut, User } from 'lucide-react'
 
 const NAV_ITEMS = [
   { id: 'hero', label: 'init' },
@@ -19,6 +21,9 @@ export default function NavBar() {
   const progress = useScrollProgress()
   const activeSection = useActiveSection(NAV_ITEMS.map(n => n.id))
   const { theme, toggleTheme } = useTheme()
+  const { user, logout } = useAuth()
+  const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 40)
@@ -27,7 +32,14 @@ export default function NavBar() {
   }, [])
 
   const scrollTo = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+    if (location.pathname !== '/') {
+      navigate('/')
+      setTimeout(() => {
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+      }, 100)
+    } else {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+    }
     setMobileOpen(false)
   }
 
@@ -43,11 +55,10 @@ export default function NavBar() {
       />
 
       <nav
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-          scrolled
-            ? 'bg-bg-base/90 dark:bg-bg-base/90 backdrop-blur-md border-b border-bg-border dark:border-bg-border'
-            : 'bg-transparent'
-        }`}
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${scrolled
+          ? 'bg-bg-base/90 dark:bg-bg-base/90 backdrop-blur-md border-b border-bg-border dark:border-bg-border'
+          : 'bg-transparent'
+          }`}
       >
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
           {/* Logo */}
@@ -66,17 +77,43 @@ export default function NavBar() {
               <li key={item.id}>
                 <button
                   onClick={() => scrollTo(item.id)}
-                  className={`px-3 py-1.5 font-mono text-xs transition-all duration-200 rounded ${
-                    activeSection === item.id
-                      ? 'text-cyan-glow dark:text-cyan-glow bg-cyan-faint dark:bg-cyan-faint'
-                      : 'text-text-muted dark:text-text-muted hover:text-text-secondary dark:hover:text-text-secondary'
-                  }`}
+                  className={`px-3 py-1.5 font-mono text-xs transition-all duration-200 rounded ${activeSection === item.id
+                    ? 'text-cyan-glow dark:text-cyan-glow bg-cyan-faint dark:bg-cyan-faint'
+                    : 'text-text-muted dark:text-text-muted hover:text-text-secondary dark:hover:text-text-secondary'
+                    }`}
                 >
                   ./{item.label}
                 </button>
               </li>
             ))}
           </ul>
+
+          {/* Desktop Auth */}
+          <div className="hidden md:flex items-center gap-2 ml-4 pl-4 border-l border-bg-border">
+            {user ? (
+              <div className="flex items-center gap-3">
+                <span className="font-mono text-[10px] text-text-muted flex items-center gap-1">
+                  <User size={10} /> {user.name.split(' ')[0].toLowerCase()}
+                </span>
+                <button
+                  onClick={logout}
+                  className="p-2 text-text-secondary hover:text-red-400 transition-colors rounded-lg hover:bg-red-400/5"
+                  title="Logout"
+                >
+                  <LogOut size={16} />
+                </button>
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="p-2 text-text-secondary hover:text-cyan-glow transition-colors rounded-lg hover:bg-bg-surface flex items-center gap-2"
+                title="Login"
+              >
+                <LogIn size={16} />
+                <span className="font-mono text-xs uppercase tracking-tight">Login</span>
+              </Link>
+            )}
+          </div>
 
           {/* Theme toggle and mobile menu */}
           <div className="flex items-center gap-2">
@@ -106,20 +143,38 @@ export default function NavBar() {
                 <li key={item.id}>
                   <button
                     onClick={() => scrollTo(item.id)}
-                    className={`w-full text-left px-3 py-2 font-mono text-sm rounded transition-all ${
-                      activeSection === item.id
-                        ? 'text-cyan-glow dark:text-cyan-glow bg-cyan-faint dark:bg-cyan-faint'
-                        : 'text-text-secondary dark:text-text-secondary hover:text-text-primary dark:hover:text-text-primary'
-                    }`}
+                    className={`w-full text-left px-3 py-2 font-mono text-sm rounded transition-all ${activeSection === item.id
+                      ? 'text-cyan-glow dark:text-cyan-glow bg-cyan-faint dark:bg-cyan-faint'
+                      : 'text-text-secondary dark:text-text-secondary hover:text-text-primary dark:hover:text-text-primary'
+                      }`}
                   >
                     <span className="text-text-muted">$ </span>./{item.label}
                   </button>
                 </li>
               ))}
+
+              <li className="pt-2 mt-2 border-t border-bg-border">
+                {user ? (
+                  <button
+                    onClick={logout}
+                    className="w-full text-left px-3 py-2 font-mono text-sm rounded text-red-400 hover:bg-red-400/5 transition-all flex items-center gap-2"
+                  >
+                    <LogOut size={16} /> ./logout
+                  </button>
+                ) : (
+                  <Link
+                    to="/login"
+                    onClick={() => setMobileOpen(false)}
+                    className="w-full text-left px-3 py-2 font-mono text-sm rounded text-cyan-glow hover:bg-cyan-faint transition-all flex items-center gap-2"
+                  >
+                    <LogIn size={16} /> ./login
+                  </Link>
+                )}
+              </li>
             </ul>
           </div>
         )}
-      </nav>
+      </nav >
     </>
   )
 }

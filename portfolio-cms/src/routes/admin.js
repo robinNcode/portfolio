@@ -8,9 +8,13 @@ const blogCtrl = require('../controllers/BlogController')
 const seriesCtrl = require('../controllers/SeriesController')
 const mediaCtrl = require('../controllers/MediaController')
 const portfolioCtrl = require('../controllers/PortfolioController')
+const authCtrl = require('../controllers/AuthController')
 
 // All admin routes require JWT + admin role
 router.use(authenticate, requireAdmin)
+
+// Auth
+router.get('/auth/me', authCtrl.me)
 
 // Blog
 router.get('/blogs', blogCtrl.listAdminBlogs)

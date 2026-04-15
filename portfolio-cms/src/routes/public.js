@@ -11,6 +11,7 @@ router.get('/health', (req, res) => res.json({ status: 'ok', time: new Date().to
 
 // Auth
 router.post('/auth/login', authCtrl.login)
+router.post('/auth/register', authCtrl.register)
 
 // Public Blog
 router.get('/blogs', blogCtrl.listBlogs)
