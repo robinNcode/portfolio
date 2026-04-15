@@ -86,14 +86,35 @@ export default function NavBar() {
                 </button>
               </li>
             ))}
+            <li>
+              <Link
+                to="/blog"
+                className={`px-3 py-1.5 font-mono text-xs transition-all duration-200 rounded ${location.pathname.startsWith('/blog')
+                  ? 'text-cyan-glow dark:text-cyan-glow bg-cyan-faint dark:bg-cyan-faint'
+                  : 'text-text-muted dark:text-text-muted hover:text-text-secondary dark:hover:text-text-secondary'
+                  }`}
+              >
+                ./logs.blog
+              </Link>
+            </li>
           </ul>
 
           {/* Desktop Auth */}
           <div className="hidden md:flex items-center gap-2 ml-4 pl-4 border-l border-bg-border">
             {user ? (
               <div className="flex items-center gap-3">
+                {user.role === 'admin' && (
+                  <Link
+                    to="/admin"
+                    className="p-2 text-text-secondary hover:text-cyan-glow transition-colors rounded-lg hover:bg-bg-surface flex items-center gap-2"
+                    title="Admin Dashboard"
+                  >
+                    <Terminal size={16} />
+                    <span className="font-mono text-xs uppercase tracking-tight">Admin</span>
+                  </Link>
+                )}
                 <span className="font-mono text-[10px] text-text-muted flex items-center gap-1">
-                  <User size={10} /> {user.name.split(' ')[0].toLowerCase()}
+                  <User size={10} /> {user?.name?.split(' ')[0]?.toLowerCase() || 'user'}
                 </span>
                 <button
                   onClick={logout}
@@ -152,15 +173,38 @@ export default function NavBar() {
                   </button>
                 </li>
               ))}
+              <li>
+                <Link
+                  to="/blog"
+                  onClick={() => setMobileOpen(false)}
+                  className={`w-full block px-3 py-2 font-mono text-sm rounded transition-all ${location.pathname.startsWith('/blog')
+                    ? 'text-cyan-glow dark:text-cyan-glow bg-cyan-faint dark:bg-cyan-faint'
+                    : 'text-text-secondary dark:text-text-secondary hover:text-text-primary dark:hover:text-text-primary'
+                    }`}
+                >
+                  <span className="text-text-muted">$ </span>./logs.blog
+                </Link>
+              </li>
 
               <li className="pt-2 mt-2 border-t border-bg-border">
                 {user ? (
-                  <button
-                    onClick={logout}
-                    className="w-full text-left px-3 py-2 font-mono text-sm rounded text-red-400 hover:bg-red-400/5 transition-all flex items-center gap-2"
-                  >
-                    <LogOut size={16} /> ./logout
-                  </button>
+                  <>
+                    <button
+                      onClick={logout}
+                      className="w-full text-left px-3 py-2 font-mono text-sm rounded text-red-400 hover:bg-red-400/5 transition-all flex items-center gap-2"
+                    >
+                      <LogOut size={16} /> ./logout
+                    </button>
+                    {user.role === 'admin' && (
+                      <Link
+                        to="/admin"
+                        onClick={() => setMobileOpen(false)}
+                        className="w-full text-left px-3 py-2 font-mono text-sm rounded text-cyan-glow hover:bg-cyan-faint transition-all flex items-center gap-2 mt-2 border-t border-bg-border pt-2"
+                      >
+                        <Terminal size={16} /> ./admin
+                      </Link>
+                    )}
+                  </>
                 ) : (
                   <Link
                     to="/login"

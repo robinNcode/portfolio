@@ -19,7 +19,8 @@ export default function Login() {
         setIsLoggingIn(true)
 
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/login', { email, password })
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+            const response = await axios.post(`${apiUrl}/auth/login`, { email, password })
             const { token, user } = response.data.data
             login(token, user)
             navigate('/')
@@ -108,12 +109,7 @@ export default function Login() {
                         </button>
                     </form>
 
-                    <p className="mt-8 text-center text-sm text-text-muted font-mono">
-                        New here?{' '}
-                        <Link to="/register" className="text-cyan-glow hover:underline underline-offset-4">
-                            auth.register_new()
-                        </Link>
-                    </p>
+
                 </div>
 
                 {/* Decorative elements */}
