@@ -11,7 +11,7 @@ export default function BlogList() {
         queryKey: ['public_blogs'],
         queryFn: async () => {
             const { data } = await axios.get(`${API_URL}/blogs?limit=50`)
-            return data.data?.results || []
+            return data.data || []
         }
     })
 
@@ -19,7 +19,7 @@ export default function BlogList() {
         queryKey: ['public_series'],
         queryFn: async () => {
             const { data } = await axios.get(`${API_URL}/series?limit=50`)
-            return data.data?.results || []
+            return data.data || []
         }
     })
 
@@ -49,8 +49,10 @@ export default function BlogList() {
                     <div className="grid md:grid-cols-2 gap-4">
                         {series.map((s: any) => (
                             <Link key={s._id} to={`/series/${s.slug}`} className="bg-bg-card border border-bg-border rounded-xl p-6 group hover:border-violet-500/30 transition-all block">
-                                <h3 className="font-display text-xl font-bold text-text-primary group-hover:text-violet-400 transition-colors mb-2">{s.name}</h3>
-                                <p className="text-sm text-text-secondary line-clamp-2">{s.description}</p>
+                                <h3 className="font-display text-xl font-bold text-text-primary group-hover:text-violet-400 transition-colors mb-2">
+                                    {s.name?.en || s.name?.bn || 'Untitled'}
+                                </h3>
+                                <p className="text-sm text-text-secondary line-clamp-2">{s.description?.en || s.description?.bn}</p>
                             </Link>
                         ))}
                     </div>
@@ -78,7 +80,7 @@ export default function BlogList() {
                                         {blog.language === 'bn' && <span className="bg-orange-500/10 text-orange-400 px-1.5 rounded">BANGLA</span>}
                                     </div>
                                     <h3 className="font-display text-xl font-bold text-text-primary group-hover:text-cyan-glow transition-colors mb-3">
-                                        {blog.title}
+                                        {blog.title?.en || blog.title?.bn || 'Untitled'}
                                     </h3>
                                     <div className="flex gap-2">
                                         {blog.tags?.slice(0, 4).map((tag: string) => (

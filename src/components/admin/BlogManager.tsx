@@ -9,7 +9,10 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
 
 interface Blog {
     _id: string
-    title: string
+    title: {
+        en: string
+        bn: string
+    }
     slug: string
     content: string
     tags: string[]
@@ -32,7 +35,7 @@ export default function BlogManager() {
             const { data } = await axios.get(`${API_URL}/admin/blogs`, {
                 headers: { Authorization: `Bearer ${token}` }
             })
-            return data.data?.results || []
+            return data.data || []
         }
     })
 
@@ -43,7 +46,7 @@ export default function BlogManager() {
             const { data } = await axios.get(`${API_URL}/admin/series`, {
                 headers: { Authorization: `Bearer ${token}` }
             })
-            return data.data?.results || []
+            return data.data || []
         }
     })
 
@@ -119,7 +122,14 @@ export default function BlogManager() {
                 </div>
                 {!editingBlog && (
                     <button
-                        onClick={() => setEditingBlog({ title: '', slug: '', content: '', tags: [], is_published: false, language: 'en' })}
+                        onClick={() => setEditingBlog({
+                            title: { en: '', bn: '' },
+                            slug: '',
+                            content: '',
+                            tags: [],
+                            is_published: false,
+                            language: 'en'
+                        })}
                         className="flex items-center gap-2 bg-cyan-glow/10 hover:bg-cyan-glow/20 border border-cyan-glow/30 text-cyan-glow font-mono text-xs px-4 py-2 rounded-lg transition-all"
                     >
                         <Plus size={16} /> NEW_ENTRY
@@ -141,28 +151,41 @@ export default function BlogManager() {
                     <form onSubmit={handleSave} className="space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-mono text-text-muted uppercase">Title</label>
+                                <label className="text-[10px] font-mono text-text-muted uppercase">Title (EN)</label>
                                 <input
-                                    type="text" required value={editingBlog.title || ''}
+                                    type="text" required value={editingBlog.title?.en || ''}
                                     onChange={e => {
-                                        const title = e.target.value
+                                        const en = e.target.value
+                                        const title = { ...(editingBlog.title || { en: '', bn: '' }), en }
                                         setEditingBlog({
                                             ...editingBlog,
                                             title,
-                                            slug: slugify(title, { lower: true, strict: true })
+                                            slug: slugify(en, { lower: true, strict: true })
                                         })
                                     }}
                                     className="w-full bg-bg-base border border-bg-border rounded-lg px-4 py-2 text-sm font-mono focus:outline-none focus:border-cyan-glow/50"
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-mono text-text-muted uppercase">Slug (Auto-generated)</label>
+                                <label className="text-[10px] font-mono text-text-muted uppercase">Title (BN)</label>
                                 <input
-                                    type="text" required value={editingBlog.slug || ''}
-                                    onChange={e => setEditingBlog({ ...editingBlog, slug: e.target.value })}
+                                    type="text" value={editingBlog.title?.bn || ''}
+                                    onChange={e => {
+                                        const bn = e.target.value
+                                        const title = { ...(editingBlog.title || { en: '', bn: '' }), bn }
+                                        setEditingBlog({ ...editingBlog, title })
+                                    }}
                                     className="w-full bg-bg-base border border-bg-border rounded-lg px-4 py-2 text-sm font-mono focus:outline-none focus:border-cyan-glow/50"
                                 />
                             </div>
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-mono text-text-muted uppercase">Slug (Auto-generated from EN)</label>
+                            <input
+                                type="text" required value={editingBlog.slug || ''}
+                                onChange={e => setEditingBlog({ ...editingBlog, slug: e.target.value })}
+                                className="w-full bg-bg-base border border-bg-border rounded-lg px-4 py-2 text-sm font-mono focus:outline-none focus:border-cyan-glow/50"
+                            />
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -186,7 +209,7 @@ export default function BlogManager() {
                                 >
                                     <option value="">None</option>
                                     {series.map((s: any) => (
-                                        <option key={s._id} value={s._id}>{s.name}</option>
+                                        <option key={s._id} value={s._id}>{s.name?.en || s.name?.bn}</option>
                                     ))}
                                 </select>
                             </div>
@@ -269,7 +292,10 @@ export default function BlogManager() {
                             {blogs.map((blog: Blog) => (
                                 <tr key={blog._id} className="hover:bg-bg-base/30 transition-colors group">
                                     <td className="px-6 py-4">
-                                        <span className="text-sm text-text-primary font-bold block">{blog.title}</span>
+                                        <span className="text-sm text-text-primary font-bold block">
+                                            {blog.title?.en}
+                                            {blog.title?.bn && <span className="text-text-muted font-normal ml-2">| {blog.title.bn}</span>}
+                                        </span>
                                         <div className="flex gap-1 mt-1 flex-wrap">
                                             {blog.tags?.slice(0, 3).map(tag => (
                                                 <span key={tag} className="text-[9px] bg-bg-base text-text-muted px-1.5 rounded">{tag}</span>

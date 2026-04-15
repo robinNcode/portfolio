@@ -8,9 +8,15 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
 
 interface Series {
     _id: string
-    name: string
+    name: {
+        en: string
+        bn: string
+    }
     slug: string
-    description: string
+    description: {
+        en: string
+        bn: string
+    }
 }
 
 export default function SeriesManager() {
@@ -24,7 +30,7 @@ export default function SeriesManager() {
             const { data } = await axios.get(`${API_URL}/admin/series`, {
                 headers: { Authorization: `Bearer ${token}` }
             })
-            return data.data?.results || []
+            return data.data || []
         }
     })
 
@@ -73,7 +79,11 @@ export default function SeriesManager() {
                     <p className="font-mono text-xs text-text-muted mt-1">Manage blog series</p>
                 </div>
                 <button
-                    onClick={() => setEditing({ name: '', slug: '', description: '' })}
+                    onClick={() => setEditing({
+                        name: { en: '', bn: '' },
+                        slug: '',
+                        description: { en: '', bn: '' }
+                    })}
                     className="flex items-center gap-2 font-mono text-xs bg-violet-500/10 text-violet-400 px-4 py-2 rounded border border-violet-500/20 hover:bg-violet-500/20"
                 >
                     <Plus size={16} /> NEW_SERIES
@@ -87,35 +97,67 @@ export default function SeriesManager() {
                         <button onClick={() => setEditing(null)} className="text-text-muted hover:text-text-primary"><X size={16} /></button>
                     </div>
                     <form onSubmit={handleSave} className="space-y-4">
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-1">
-                                <label className="text-[10px] font-mono text-text-muted uppercase">Name</label>
+                                <label className="text-[10px] font-mono text-text-muted uppercase">Name (EN)</label>
                                 <input
                                     required autoFocus className="w-full bg-bg-base border border-bg-border rounded px-3 py-2 text-sm font-mono text-text-primary"
-                                    value={editing.name || ''}
+                                    value={editing.name?.en || ''}
                                     onChange={e => {
-                                        const name = e.target.value
-                                        setEditing({ ...editing, name, slug: slugify(name, { lower: true, strict: true }) })
+                                        const en = e.target.value
+                                        const name = { ...(editing.name || { en: '', bn: '' }), en }
+                                        setEditing({ ...editing, name, slug: slugify(en, { lower: true, strict: true }) })
                                     }}
                                 />
                             </div>
                             <div className="space-y-1">
-                                <label className="text-[10px] font-mono text-text-muted uppercase">Slug</label>
+                                <label className="text-[10px] font-mono text-text-muted uppercase">Name (BN)</label>
                                 <input
-                                    required className="w-full bg-bg-base border border-bg-border rounded px-3 py-2 text-sm font-mono text-text-primary"
-                                    value={editing.slug || ''}
-                                    onChange={e => setEditing({ ...editing, slug: e.target.value })}
+                                    className="w-full bg-bg-base border border-bg-border rounded px-3 py-2 text-sm font-mono text-text-primary"
+                                    value={editing.name?.bn || ''}
+                                    onChange={e => {
+                                        const bn = e.target.value
+                                        const name = { ...(editing.name || { en: '', bn: '' }), bn }
+                                        setEditing({ ...editing, name })
+                                    }}
                                 />
                             </div>
                         </div>
                         <div className="space-y-1">
-                            <label className="text-[10px] font-mono text-text-muted uppercase">Description</label>
-                            <textarea
-                                className="w-full bg-bg-base border border-bg-border rounded px-3 py-2 text-sm font-mono text-text-primary resize-none"
-                                value={editing.description || ''}
-                                onChange={e => setEditing({ ...editing, description: e.target.value })}
-                                rows={2}
+                            <label className="text-[10px] font-mono text-text-muted uppercase">Slug (Auto from EN)</label>
+                            <input
+                                required className="w-full bg-bg-base border border-bg-border rounded px-3 py-2 text-sm font-mono text-text-primary"
+                                value={editing.slug || ''}
+                                onChange={e => setEditing({ ...editing, slug: e.target.value })}
                             />
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                                <label className="text-[10px] font-mono text-text-muted uppercase">Description (EN)</label>
+                                <textarea
+                                    className="w-full bg-bg-base border border-bg-border rounded px-3 py-2 text-sm font-mono text-text-primary resize-none"
+                                    value={editing.description?.en || ''}
+                                    onChange={e => {
+                                        const en = e.target.value
+                                        const description = { ...(editing.description || { en: '', bn: '' }), en }
+                                        setEditing({ ...editing, description })
+                                    }}
+                                    rows={2}
+                                />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-[10px] font-mono text-text-muted uppercase">Description (BN)</label>
+                                <textarea
+                                    className="w-full bg-bg-base border border-bg-border rounded px-3 py-2 text-sm font-mono text-text-primary resize-none"
+                                    value={editing.description?.bn || ''}
+                                    onChange={e => {
+                                        const bn = e.target.value
+                                        const description = { ...(editing.description || { en: '', bn: '' }), bn }
+                                        setEditing({ ...editing, description })
+                                    }}
+                                    rows={2}
+                                />
+                            </div>
                         </div>
                         <div className="flex justify-end gap-3 pt-2">
                             <button type="submit" disabled={saveMutation.isPending} className="flex gap-2 items-center bg-violet-500 text-bg-base font-bold font-mono text-xs px-4 py-2 rounded">
@@ -129,9 +171,12 @@ export default function SeriesManager() {
                     {series.map((s: Series) => (
                         <div key={s._id} className="bg-bg-surface border border-bg-border rounded-lg p-5 group flex justify-between">
                             <div>
-                                <h4 className="font-mono text-sm font-bold text-text-primary">{s.name}</h4>
+                                <h4 className="font-mono text-sm font-bold text-text-primary">
+                                    {s.name?.en}
+                                    {s.name?.bn && <span className="text-text-muted font-normal ml-2">| {s.name.bn}</span>}
+                                </h4>
                                 <p className="font-mono text-[10px] text-text-muted mt-1">/{s.slug}</p>
-                                <p className="font-mono text-xs text-text-secondary mt-2 line-clamp-1">{s.description}</p>
+                                <p className="font-mono text-xs text-text-secondary mt-2 line-clamp-1">{s.description?.en || s.description?.bn}</p>
                             </div>
                             <div className="flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <button className="p-1.5 hover:text-cyan-glow text-text-muted" onClick={() => setEditing(s)}><Edit2 size={14} /></button>

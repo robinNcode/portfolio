@@ -1,5 +1,5 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, Link } from 'react-router-dom'
 import {
     LayoutDashboard,
     FileText,
@@ -65,6 +65,14 @@ export default function AdminSidebar() {
                         <span className="text-[10px] font-mono text-text-muted truncate lowercase">{user?.role}</span>
                     </div>
                 </div>
+
+                <Link
+                    to="/"
+                    className="w-full flex items-center gap-3 px-4 py-3 text-text-muted hover:text-cyan-glow hover:bg-cyan-glow/5 rounded-lg transition-all group"
+                >
+                    <Terminal size={18} />
+                    <span className="font-mono text-xs uppercase tracking-wider">pub.site();</span>
+                </Link>
 
                 <button
                     onClick={logout}
