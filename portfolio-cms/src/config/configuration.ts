@@ -11,7 +11,7 @@ export default () => ({
     password: process.env.ADMIN_PASSWORD || 'Admin@1234',
   },
   cors: {
-    origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+    origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : ['http://localhost:5173', 'http://localhost:3000', 'http://192.168.26.65:8083'],
   },
   upload: {
     dir: process.env.UPLOAD_DIR || 'uploads',
