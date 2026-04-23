@@ -5,7 +5,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 192.168.26.65 --port 8083",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "predeploy": "npm run build",
