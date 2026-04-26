@@ -15,6 +15,7 @@ interface Blog {
     }
     slug: string
     content: string
+    cover_image?: string
     tags: string[]
     images: string[]
     is_published: boolean
@@ -27,7 +28,19 @@ export default function BlogManager() {
     const queryClient = useQueryClient()
     const [editingBlog, setEditingBlog] = useState<Partial<Blog> | null>(null)
     const [tagInput, setTagInput] = useState('')
+    const [showMediaPicker, setShowMediaPicker] = useState(false)
+    const [pickerTarget, setPickerTarget] = useState<'cover' | 'inline'>('cover')
 
+    const { data: media = [] } = useQuery({
+        queryKey: ['media'],
+        queryFn: async () => {
+            const token = localStorage.getItem('token')
+            const { data } = await axios.get(`${API_URL}/admin/media?limit=50`, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            return data.data || []
+        }
+    })
     const { data: blogs = [], isLoading } = useQuery({
         queryKey: ['admin_blogs'],
         queryFn: async () => {
@@ -111,6 +124,20 @@ export default function BlogManager() {
         })
     }
 
+    const selectMedia = (url: string) => {
+        if (!editingBlog) return
+        if (pickerTarget === 'cover') {
+            setEditingBlog({ ...editingBlog, cover_image: url })
+        } else {
+            const fullImageUrl = `${BACKEND_URL}${url}`
+            const imgMarkdown = `\n![image](${fullImageUrl})\n`
+            setEditingBlog({ ...editingBlog, content: (editingBlog.content || '') + imgMarkdown })
+        }
+        setShowMediaPicker(false)
+    }
+
+    const BACKEND_URL = API_URL.replace('/api', '')
+
     if (isLoading) return <Loader2 className="w-8 h-8 text-cyan-glow animate-spin mx-auto mt-20" />
 
     return (
@@ -126,6 +153,7 @@ export default function BlogManager() {
                             title: { en: '', bn: '' },
                             slug: '',
                             content: '',
+                            cover_image: '',
                             tags: [],
                             is_published: false,
                             language: 'en'
@@ -244,10 +272,53 @@ export default function BlogManager() {
                             </div>
                         </div>
 
+                        <div className="md:col-span-1 space-y-2">
+                             <label className="text-[10px] font-mono text-text-muted uppercase">Cover Image</label>
+                             <div className="flex gap-4">
+                                {editingBlog.cover_image ? (
+                                    <div className="relative group/img w-32 h-20 rounded-lg overflow-hidden border border-bg-border bg-bg-base">
+                                        <img src={editingBlog.cover_image.startsWith('http') ? editingBlog.cover_image : `${BACKEND_URL}${editingBlog.cover_image}`} className="w-full h-full object-cover" />
+                                        <button 
+                                            type="button" 
+                                            onClick={() => setEditingBlog({...editingBlog, cover_image: ''})}
+                                            className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-opacity text-white"
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <button 
+                                        type="button"
+                                        onClick={() => { setPickerTarget('cover'); setShowMediaPicker(true); }}
+                                        className="w-32 h-20 border border-dashed border-bg-border rounded-lg flex flex-col items-center justify-center gap-1 text-text-muted hover:border-cyan-glow hover:text-cyan-glow transition-all"
+                                    >
+                                        <ImageIcon size={20} />
+                                        <span className="text-[9px] font-mono">SELECT</span>
+                                    </button>
+                                )}
+                                <div className="flex-1 space-y-2">
+                                    <input 
+                                        type="text" 
+                                        placeholder="Or paste external URL..." 
+                                        value={editingBlog.cover_image || ''}
+                                        onChange={e => setEditingBlog({...editingBlog, cover_image: e.target.value})}
+                                        className="w-full bg-bg-base border border-bg-border rounded-lg px-4 py-2 text-[10px] font-mono focus:outline-none focus:border-cyan-glow/50"
+                                    />
+                                    <p className="text-[9px] text-text-muted font-mono">Recommended: 1200x630px</p>
+                                </div>
+                             </div>
+                        </div>
+
                         <div className="space-y-2">
                             <label className="text-[10px] font-mono text-text-muted uppercase flex justify-between">
                                 <span>Rich Content (MDX Supported)</span>
-                                <span className="text-pink-400">Use Media Manager to host images</span>
+                                <button 
+                                    type="button"
+                                    onClick={() => { setPickerTarget('inline'); setShowMediaPicker(true); }}
+                                    className="text-pink-400 hover:underline flex items-center gap-1"
+                                >
+                                    <ImageIcon size={12} /> ATTACH_IMAGE
+                                </button>
                             </label>
                             <div data-color-mode="dark">
                                 <MDEditor
@@ -333,6 +404,44 @@ export default function BlogManager() {
                             ))}
                         </tbody>
                     </table>
+                </div>
+            )}
+
+            {/* Media Picker Modal */}
+            {showMediaPicker && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 backdrop-blur-sm bg-black/40">
+                    <div className="bg-bg-surface border border-bg-border rounded-2xl w-full max-w-4xl max-h-[80vh] flex flex-col shadow-2xl shadow-black/50 overflow-hidden animate-in zoom-in-95 duration-200">
+                        <div className="p-6 border-b border-bg-border flex items-center justify-between bg-bg-base/30">
+                            <div>
+                                <h3 className="font-mono font-bold text-text-primary uppercase tracking-wider">Select Media</h3>
+                                <p className="text-[10px] text-text-muted font-mono mt-1">
+                                    {pickerTarget === 'cover' ? 'Choosing cover photo for this log entry' : 'Select image to insert into content'}
+                                </p>
+                            </div>
+                            <button onClick={() => setShowMediaPicker(false)} className="text-text-muted hover:text-text-primary transition-colors">
+                                <X size={20} />
+                            </button>
+                        </div>
+                        <div className="p-6 overflow-y-auto grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                            {media.map((item: any) => (
+                                <div 
+                                    key={item._id} 
+                                    onClick={() => selectMedia(item.url)}
+                                    className="aspect-square bg-bg-base border border-bg-border rounded-lg overflow-hidden cursor-pointer hover:border-cyan-glow group relative"
+                                >
+                                    <img src={`${BACKEND_URL}${item.url}`} className="w-full h-full object-cover transition-transform group-hover:scale-105" />
+                                    <div className="absolute inset-0 bg-cyan-glow/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <span className="bg-cyan-glow text-bg-base font-bold font-mono text-[10px] px-2 py-1 rounded">SELECT</span>
+                                    </div>
+                                </div>
+                            ))}
+                            {media.length === 0 && (
+                                <div className="col-span-full py-12 text-center text-text-muted font-mono">
+                                    No media found. Upload images in the Media section first.
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 </div>
             )}
         </div>

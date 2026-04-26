@@ -56,16 +56,6 @@ export default function AdminSidebar() {
             </nav>
 
             <div className="mt-auto pt-6 border-t border-bg-border">
-                <div className="flex items-center gap-3 mb-6 px-4">
-                    <div className="w-8 h-8 rounded bg-cyan-faint flex items-center justify-center text-cyan-glow font-mono text-sm">
-                        {user?.name?.[0].toUpperCase()}
-                    </div>
-                    <div className="flex flex-col overflow-hidden">
-                        <span className="text-xs font-mono font-bold text-text-primary truncate">{user?.name}</span>
-                        <span className="text-[10px] font-mono text-text-muted truncate lowercase">{user?.role}</span>
-                    </div>
-                </div>
-
                 <Link
                     to="/"
                     className="w-full flex items-center gap-3 px-4 py-3 text-text-muted hover:text-cyan-glow hover:bg-cyan-glow/5 rounded-lg transition-all group"

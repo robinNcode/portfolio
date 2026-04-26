@@ -53,27 +53,30 @@ export default function SeriesDetail() {
                         const article = item.blog_id;
                         if (!article) return null;
                         
+                        const title = article.title?.en || article.title?.bn || (typeof article.title === 'string' ? article.title : 'Untitled Article');
+                        const slug = article.slug || '';
+                        
                         return (
                             <motion.div
-                                key={article._id}
+                                key={article._id || i}
                                 initial={{ opacity: 0, x: -10 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: i * 0.1 }}
                             >
                                 <Link 
-                                    to={`/blog/${article.slug}`} 
-                                    className="bg-bg-card border border-bg-border rounded-xl p-6 group flex items-center gap-6 transition-all hover:bg-bg-surface hover:border-violet-500/30"
+                                    to={`/blog/${slug}`} 
+                                    className="bg-bg-card border border-bg-border rounded-xl p-6 group flex items-center gap-6 transition-all hover:bg-bg-surface hover:border-cyan-glow/30"
                                 >
-                                    <div className="w-10 h-10 rounded-full bg-violet-500/10 border border-violet-500/20 flex items-center justify-center shrink-0 font-mono text-violet-400 font-bold">
-                                        {i + 1}
+                                    <div className="w-10 h-10 rounded-full bg-cyan-glow/10 border border-cyan-glow/20 flex items-center justify-center shrink-0 font-mono text-cyan-glow font-bold">
+                                        {item.order || i + 1}
                                     </div>
                                     <div className="flex-1">
-                                        <h3 className="font-display text-xl font-bold text-text-primary group-hover:text-violet-400 transition-colors">
-                                            {article.title?.en || article.title?.bn || 'Untitled Article'}
+                                        <h3 className="font-display text-xl font-bold text-text-primary group-hover:text-cyan-glow transition-colors">
+                                            {title}
                                         </h3>
                                         <p className="text-sm text-text-secondary mt-1">{article.excerpt}</p>
                                     </div>
-                                    <ChevronRight className="text-text-muted group-hover:text-violet-400 group-hover:translate-x-1 transition-all" size={20} />
+                                    <ChevronRight className="text-text-muted group-hover:text-cyan-glow group-hover:translate-x-1 transition-all" size={20} />
                                 </Link>
                             </motion.div>
                         );

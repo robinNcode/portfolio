@@ -72,20 +72,33 @@ export default function BlogList() {
                             transition={{ delay: i * 0.05 }}
                         >
                             <Link to={`/blog/${blog.slug}`} className="bg-bg-card border border-bg-border rounded-xl p-6 group flex items-start justify-between transition-all hover:bg-bg-surface hover:border-cyan-glow/30">
-                                <div>
-                                    <div className="flex items-center gap-3 mb-2 font-mono text-[10px] uppercase text-text-muted">
-                                        <span className="text-cyan-glow">{new Date(blog.published_at || blog.createdAt).toLocaleDateString()}</span>
-                                        <span>•</span>
-                                        <span>{blog.read_time || 5} MIN READ</span>
-                                        {blog.language === 'bn' && <span className="bg-orange-500/10 text-orange-400 px-1.5 rounded">BANGLA</span>}
-                                    </div>
-                                    <h3 className="font-display text-xl font-bold text-text-primary group-hover:text-cyan-glow transition-colors mb-3">
-                                        {blog.title?.en || blog.title?.bn || 'Untitled'}
-                                    </h3>
-                                    <div className="flex gap-2">
-                                        {blog.tags?.slice(0, 4).map((tag: string) => (
-                                            <span key={tag} className="tag">{tag}</span>
-                                        ))}
+                                <div className="flex-1 flex gap-6">
+                                    {blog.cover_image && (
+                                        <div className="w-24 h-24 md:w-32 md:h-32 rounded-lg overflow-hidden shrink-0 border border-bg-border bg-bg-base">
+                                            <img 
+                                                src={blog.cover_image.startsWith('http') ? blog.cover_image : `${API_URL.replace('/api', '')}${blog.cover_image}`} 
+                                                className="w-full h-full object-cover transition-transform group-hover:scale-105" 
+                                            />
+                                        </div>
+                                    )}
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-3 mb-2 font-mono text-[10px] uppercase text-text-muted">
+                                            <span className="text-cyan-glow">{new Date(blog.published_at || blog.createdAt).toLocaleDateString()}</span>
+                                            <span>•</span>
+                                            <span>{blog.read_time || 5} MIN READ</span>
+                                            {blog.language === 'bn' && <span className="bg-orange-500/10 text-orange-400 px-1.5 rounded">BANGLA</span>}
+                                        </div>
+                                        <h3 className="font-display text-xl font-bold text-text-primary group-hover:text-cyan-glow transition-colors mb-3 truncate">
+                                            {blog.title?.en || blog.title?.bn || 'Untitled'}
+                                        </h3>
+                                        <p className="text-sm text-text-secondary line-clamp-2 mb-4">
+                                            {blog.excerpt}
+                                        </p>
+                                        <div className="flex gap-2">
+                                            {blog.tags?.slice(0, 4).map((tag: string) => (
+                                                <span key={tag} className="tag text-[9px]">{tag}</span>
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
                                 <ChevronRight className="text-text-muted opacity-0 group-hover:opacity-100 transition-opacity mt-4" size={20} />

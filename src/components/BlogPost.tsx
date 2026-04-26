@@ -32,13 +32,22 @@ export default function BlogPost() {
                 animate={{ opacity: 1, y: 0 }}
             >
                 <div className="mb-10">
-                    {blog.series_id && (
+                    {blog.series_id && typeof blog.series_id === 'object' && (
                         <Link 
                             to={`/series/${blog.series_id.slug}`}
-                            className="text-xs font-mono uppercase tracking-widest text-violet-400 mb-4 bg-violet-500/10 w-fit px-3 py-1 rounded-full border border-violet-500/20 block hover:bg-violet-500/20 transition-all"
+                            className="text-xs font-mono uppercase tracking-widest text-cyan-glow mb-4 bg-cyan-glow/10 w-fit px-3 py-1 rounded-full border border-cyan-glow/20 block hover:bg-cyan-glow/20 transition-all font-bold"
                         >
-                            Series: {blog.series_id.name?.en || blog.series_id.name?.bn || 'Unknown'}
+                            Learning Series: {blog.series_id.name?.en || blog.series_id.name?.bn || 'Active Series'}
                         </Link>
+                    )}
+                    {blog.cover_image && (
+                        <div className="w-full aspect-video rounded-2xl overflow-hidden border border-bg-border bg-bg-base mb-10">
+                            <img 
+                                src={blog.cover_image.startsWith('http') ? blog.cover_image : `${API_URL.replace('/api', '')}${blog.cover_image}`} 
+                                className="w-full h-full object-cover" 
+                                alt={blog.title?.en}
+                            />
+                        </div>
                     )}
                     <h1 className="font-display text-4xl md:text-5xl font-bold text-text-primary mb-6 leading-tight">
                         {blog.title?.en || blog.title?.bn || 'Untitled'}

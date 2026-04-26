@@ -317,3 +317,74 @@ body::before {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Typography Overrides */
+.prose {
+  color: rgb(var(--text-secondary));
+  font-family: inherit;
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  color: rgb(var(--text-primary));
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+}
+
+.prose strong {
+  color: rgb(var(--text-primary));
+  font-weight: 600;
+}
+
+.prose code {
+  color: rgb(var(--cyan));
+  background: rgba(34, 211, 238, 0.1);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.prose code::before,
+.prose code::after {
+  content: none !important;
+}
+
+.prose pre {
+  background-color: rgb(var(--bg-card)) !important;
+  border: 1px solid rgb(var(--border));
+  border-radius: 8px;
+}
+
+.prose pre code {
+  background: transparent;
+  padding: 0;
+  color: inherit;
+  font-size: 0.9em;
+}
+
+.prose blockquote {
+  border-left-color: rgb(var(--cyan));
+  color: rgb(var(--text-muted));
+  font-style: italic;
+  background: rgba(34, 211, 238, 0.03);
+  padding: 0.5em 1.5em;
+  border-radius: 0 8px 8px 0;
+}
+
+/* MDEditor Overrides */
+.wmde-markdown {
+  background-color: transparent !important;
+  color: inherit !important;
+  font-family: inherit !important;
+}
+
+.wmde-markdown code {
+  color: rgb(var(--cyan)) !important;
+  background: rgba(34, 211, 238, 0.1) !important;
+  padding: 0.2em 0.4em !important;
+  border-radius: 4px !important;
+}
+
+.wmde-markdown pre {
+  background-color: rgb(var(--bg-card)) !important;
+  border: 1px solid rgb(var(--border)) !important;
+}

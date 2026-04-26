@@ -8,7 +8,6 @@ import { Terminal, Menu, X, Sun, Moon, LogIn, LogOut, User } from 'lucide-react'
 const NAV_ITEMS = [
   { id: 'hero', label: 'init' },
   { id: 'about', label: 'about' },
-  { id: 'experience', label: 'log' },
   { id: 'projects', label: 'services' },
   { id: 'skills', label: 'stack' },
   { id: 'opensource', label: 'pkg' },
@@ -113,9 +112,6 @@ export default function NavBar() {
                     <span className="font-mono text-xs uppercase tracking-tight">Admin</span>
                   </Link>
                 )}
-                <span className="font-mono text-[10px] text-text-muted flex items-center gap-1">
-                  <User size={10} /> {user?.name?.split(' ')[0]?.toLowerCase() || 'user'}
-                </span>
                 <button
                   onClick={logout}
                   className="p-2 text-text-secondary hover:text-red-400 transition-colors rounded-lg hover:bg-red-400/5"

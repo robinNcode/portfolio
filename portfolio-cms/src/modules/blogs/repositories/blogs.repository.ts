@@ -11,19 +11,19 @@ export class BlogsRepository implements IBlogsRepository {
   ) {}
 
   async findAll(): Promise<Blog[]> {
-    return this.blogModel.find().exec();
+    return this.blogModel.find().populate('series_id').exec();
   }
 
   async findById(id: string): Promise<Blog | null> {
-    return this.blogModel.findById(id).exec();
+    return this.blogModel.findById(id).populate('series_id').exec();
   }
 
   async findOne(filter: object): Promise<Blog | null> {
-    return this.blogModel.findOne(filter).exec();
+    return this.blogModel.findOne(filter).populate('series_id').exec();
   }
 
   async findBySlug(slug: string): Promise<Blog | null> {
-    return this.blogModel.findOne({ slug }).exec();
+    return this.blogModel.findOne({ slug }).populate('series_id').exec();
   }
 
   async create(data: Partial<Blog>): Promise<Blog> {
