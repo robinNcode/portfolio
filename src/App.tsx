@@ -11,6 +11,7 @@ import Contact from './components/Contact'
 import Login from './components/Login'
 import BlogList from './components/BlogList'
 import BlogPost from './components/BlogPost'
+import SeriesDetail from './components/SeriesDetail'
 import ProtectedRoute from './components/ProtectedRoute'
 import AdminLayout from './components/admin/AdminLayout'
 import AdminDash from './components/admin/Dashboard'
@@ -47,6 +48,7 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/blog" element={<BlogList />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
+        <Route path="/series/:slug" element={<SeriesDetail />} />
         <Route path="/login" element={<Login />} />
 
         {/* Admin Routes */}

@@ -14,6 +14,10 @@ export class SeriesRepository extends BaseRepository<Series> implements ISeriesR
   }
 
   async findBySlug(slug: string): Promise<Series | null> {
-    return this.model.findOne({ slug }).lean().exec() as any;
+    return this.model.findOne({ slug }).populate('articles.blog_id').lean().exec() as any;
+  }
+
+  async findById(id: string): Promise<Series | null> {
+    return this.model.findById(id).populate('articles.blog_id').lean().exec() as any;
   }
 }

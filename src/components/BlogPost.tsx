@@ -33,9 +33,12 @@ export default function BlogPost() {
             >
                 <div className="mb-10">
                     {blog.series_id && (
-                        <div className="text-xs font-mono uppercase tracking-widest text-violet-400 mb-4 bg-violet-500/10 w-fit px-3 py-1 rounded-full border border-violet-500/20">
+                        <Link 
+                            to={`/series/${blog.series_id.slug}`}
+                            className="text-xs font-mono uppercase tracking-widest text-violet-400 mb-4 bg-violet-500/10 w-fit px-3 py-1 rounded-full border border-violet-500/20 block hover:bg-violet-500/20 transition-all"
+                        >
                             Series: {blog.series_id.name?.en || blog.series_id.name?.bn || 'Unknown'}
-                        </div>
+                        </Link>
                     )}
                     <h1 className="font-display text-4xl md:text-5xl font-bold text-text-primary mb-6 leading-tight">
                         {blog.title?.en || blog.title?.bn || 'Untitled'}
