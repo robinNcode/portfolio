@@ -19,7 +19,7 @@ export default function Login() {
         setIsLoggingIn(true)
 
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+            const apiUrl = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:3001/api`
             const response = await axios.post(`${apiUrl}/auth/login`, { email, password })
             const { token, user } = response.data.data
             login(token, user)

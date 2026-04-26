@@ -1,14 +1,30 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { ChevronRight, Award, GitCommit, Users } from 'lucide-react'
-import { experiences } from '../data'
+import axios from 'axios'
+
+const API_URL = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:3001/api`
 
 export default function Experience() {
   const ref = useRef<HTMLElement>(null)
   const isInView = useInView(ref as React.RefObject<Element>, { once: true, margin: '-80px' })
   const [active, setActive] = useState(0)
+  const [experiences, setExperiences] = useState<any[]>([])
 
-  const exp = experiences[active]
+  useEffect(() => {
+    axios.get(`${API_URL}/experiences`).then(res => {
+      if (res.data && res.data.data) {
+        setExperiences(res.data.data);
+      } else if (Array.isArray(res.data)) {
+        setExperiences(res.data.sort((a: any, b: any) => a.order - b.order));
+      }
+    }).catch(console.error);
+  }, []);
+
+  if (!experiences || experiences.length === 0) return null;
+
+  const exp = experiences[active] || {}
+  const problemSolved = exp.problem_solved || exp.problemSolved || '';
 
   return (
     <section id="experience" ref={ref} className="py-28 relative">
@@ -99,7 +115,7 @@ export default function Experience() {
               <div className="font-mono text-xs text-orange-accent mb-3 flex items-center gap-2">
                 <span>⚠</span> ROOT CAUSE ANALYSIS
               </div>
-              <p className="text-sm text-text-secondary leading-relaxed">{exp.problemSolved}</p>
+              <p className="text-sm text-text-secondary leading-relaxed">{problemSolved}</p>
             </div>
 
             {/* Impact */}
@@ -108,7 +124,7 @@ export default function Experience() {
                 <ChevronRight size={12} /> MEASURABLE IMPACT
               </div>
               <ul className="space-y-2.5">
-                {exp.impact.map((item, i) => (
+                {(exp.impact || []).map((item: string, i: number) => (
                   <li key={i} className="flex items-start gap-3 text-sm text-text-secondary">
                     <span className="text-cyan-glow mt-0.5 flex-shrink-0 font-mono">›</span>
                     {item}
@@ -124,7 +140,7 @@ export default function Experience() {
                   <Users size={12} /> LEADERSHIP & OWNERSHIP
                 </div>
                 <ul className="space-y-2.5">
-                  {exp.leadership.map((item, i) => (
+                  {(exp.leadership || []).map((item: string, i: number) => (
                     <li key={i} className="flex items-start gap-3 text-sm text-text-secondary">
                       <span className="text-violet-400 mt-0.5 flex-shrink-0 font-mono">›</span>
                       {item}
@@ -147,7 +163,7 @@ export default function Experience() {
 
             {/* Stack */}
             <div className="flex flex-wrap gap-2">
-              {exp.stack.map(tech => (
+              {(exp.stack || []).map((tech: string) => (
                 <span key={tech} className="tag">{tech}</span>
               ))}
             </div>

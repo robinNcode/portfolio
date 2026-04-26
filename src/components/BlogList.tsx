@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { Loader2, FileText, ChevronRight, Layers } from 'lucide-react'
 import { motion } from 'framer-motion'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+const API_URL = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:3001/api`
 
 export default function BlogList() {
     const { data: blogs = [], isLoading: blogsLoading } = useQuery({

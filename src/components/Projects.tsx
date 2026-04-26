@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { X, ArrowRight } from 'lucide-react'
 import { projects } from '../data'
@@ -107,12 +107,24 @@ function ArchDiagram({ type, accent }: { type: string; accent: string }) {
   )
 }
 
+import axios from 'axios'
+
+const API_URL = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:3001/api`
+
 export default function Projects() {
   const ref = useRef<HTMLElement>(null)
   const isInView = useInView(ref as React.RefObject<Element>, { once: true, margin: '-80px' })
   const [selected, setSelected] = useState<string | null>(null)
+  const [projects, setProjects] = useState<any[]>([])
 
-  const selectedProject = projects.find(p => p.id === selected)
+  useEffect(() => {
+    axios.get(`${API_URL}/projects`).then(res => {
+      if (res.data && res.data.data) setProjects(res.data.data);
+      else if (Array.isArray(res.data)) setProjects(res.data.sort((a: any, b: any) => a.order - b.order));
+    }).catch(console.error);
+  }, []);
+
+  const selectedProject = projects.find(p => (p.project_id || p.id) === selected)
 
   return (
     <section id="projects" ref={ref} className="py-28 relative">
@@ -139,11 +151,11 @@ export default function Projects() {
         <div className="grid md:grid-cols-2 gap-6">
           {projects.map((project, i) => (
             <motion.div
-              key={project.id}
+              key={project.project_id || project.id}
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: i * 0.1 }}
-              onClick={() => setSelected(project.id)}
+              onClick={() => setSelected(project.project_id || project.id)}
               className={`group card-hover rounded-xl overflow-hidden cursor-pointer bg-gradient-to-br ${project.gradient} bg-bg-card`}
             >
               {/* Architecture diagram */}
@@ -179,7 +191,7 @@ export default function Projects() {
                 </p>
 
                 <div className="flex flex-wrap gap-1.5 mt-4">
-                  {project.stack.slice(0, 4).map(tech => (
+                  {(project.stack || []).slice(0, 4).map((tech: string) => (
                     <span key={tech} className="tag text-[10px]">{tech}</span>
                   ))}
                   {project.stack.length > 4 && (
@@ -250,7 +262,7 @@ export default function Projects() {
                   <div>
                     <div className="font-mono text-[10px] uppercase tracking-widest text-text-muted mb-2">STACK</div>
                     <div className="flex flex-wrap gap-2">
-                      {selectedProject.stack.map(t => (
+                      {(selectedProject.stack || []).map((t: string) => (
                         <span key={t} className="tag">{t}</span>
                       ))}
                     </div>

@@ -1,6 +1,8 @@
-import { useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { skills } from '../data'
+import axios from 'axios'
+
+const API_URL = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:3001/api`
 
 const LAYER_COLORS: Record<string, { border: string; bg: string; label: string }> = {
   'Frontend Systems': {
@@ -28,8 +30,17 @@ const LAYER_COLORS: Record<string, { border: string; bg: string; label: string }
 export default function Skills() {
   const ref = useRef<HTMLElement>(null)
   const isInView = useInView(ref as React.RefObject<Element>, { once: true, margin: '-80px' })
+  const [skills, setSkills] = useState<any[]>([])
 
-  const skillEntries = Object.entries(skills)
+  useEffect(() => {
+    axios.get(`${API_URL}/skills`).then(res => {
+      let data = [];
+      if (res.data && res.data.data) data = res.data.data;
+      else if (Array.isArray(res.data)) data = res.data;
+      data.sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
+      setSkills(data);
+    }).catch(console.error);
+  }, []);
 
   return (
     <section id="skills" ref={ref} className="py-28 relative overflow-hidden">
@@ -71,8 +82,14 @@ export default function Skills() {
             </div>
           </motion.div>
 
-          {skillEntries.map(([category, data], layerIdx) => {
-            const colors = LAYER_COLORS[category]
+          {skills.map((data, layerIdx) => {
+            const category = data.category
+
+            const colors = LAYER_COLORS[category] || {
+              border: 'rgba(255,255,255,0.3)',
+              bg: 'rgba(255,255,255,0.05)',
+              label: '#ffffff'
+            }
             return (
               <motion.div
                 key={category}
@@ -106,7 +123,7 @@ export default function Skills() {
 
                   {/* Skills grid */}
                   <div className="p-5 flex flex-wrap gap-2">
-                    {data.items.map((skill, i) => (
+                    {(data.items || []).map((skill: string, i: number) => (
                       <motion.div
                         key={skill}
                         initial={{ opacity: 0, scale: 0.85 }}
@@ -140,12 +157,12 @@ export default function Skills() {
                 </div>
 
                 {/* Connector between layers */}
-                {layerIdx < skillEntries.length - 1 && (
+                {layerIdx < skills.length - 1 && (
                   <div className="flex justify-center py-1">
                     <div
                       className="w-px h-3"
                       style={{
-                        background: `linear-gradient(to bottom, ${colors.label}50, ${LAYER_COLORS[skillEntries[layerIdx + 1][0]].label}50)`,
+                        background: `linear-gradient(to bottom, ${colors?.label}50, ${LAYER_COLORS[skills[layerIdx + 1]?.category]?.label || '#333'}50)`,
                       }}
                     />
                   </div>

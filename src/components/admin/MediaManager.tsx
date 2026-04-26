@@ -3,7 +3,7 @@ import axios from 'axios'
 import { Trash2, Loader2, ImagePlus, Copy, CheckCircle2, Plus } from 'lucide-react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+const API_URL = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:3001/api`
 const BACKEND_URL = API_URL.replace('/api', '')
 
 interface Media {
